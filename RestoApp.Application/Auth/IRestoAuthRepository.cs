@@ -9,6 +9,6 @@ namespace RestoApp.Application.Auth
 {
     public interface IRestoAuthRepository
     {
-        Task<Resto?> InsertResto(Resto resto);
+        Task<string?> InsertResto(Resto resto);
     }
 }

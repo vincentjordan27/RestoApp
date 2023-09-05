@@ -23,11 +23,12 @@ namespace RestoApp.API.Controllers
         public async Task<IActionResult> RegisterResto([FromBody] RegisterRestoRequestDto registerRestoDTO)
         {
             var result = await restoAuthService.RegisterResto(registerRestoDTO);
-            if (result != null)
+            if (result == null)
             {
                 return Ok(new { message = "Berhasil register" });
             }
             return BadRequest(new { message = result });
         }
+
     }
 }

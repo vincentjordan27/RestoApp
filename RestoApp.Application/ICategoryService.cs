@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RestoApp.Domain.Entities;
 
 namespace RestoApp.Application
 {
     public interface ICategoryService
     {
-        List<Domain.Category> GetAll();
+        List<Category> GetAll();
     }
 }

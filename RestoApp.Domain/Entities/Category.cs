@@ -4,12 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RestoApp.Domain
+namespace RestoApp.Domain.Entities
 {
-    public class Restaurant
+    public class Category
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public Guid CategoryId { get; set; }
     }
 }

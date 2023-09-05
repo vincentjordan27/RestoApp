@@ -8,6 +8,7 @@ using RestoApp.Infrastructure.Data;
 using RestoApp.Application.Mapper;
 using RestoApp.Application.Auth;
 using Microsoft.AspNetCore.Identity;
+using RestoApp.Infrastructure.Category;
 
 var builder = WebApplication.CreateBuilder(args);
 

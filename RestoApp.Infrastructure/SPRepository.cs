@@ -8,6 +8,7 @@ namespace RestoApp.Infrastructure
 {
     public class SPRepository
     {
-        public static string SPINSERTRESTO = "INSERT_RESTO";
+        public static string SPIURESTOUSER = "IU_RESTO";
+        public static string SPCHECKCATEGORY = "CHECK_CATEGORY_EXIST";
     }
 }

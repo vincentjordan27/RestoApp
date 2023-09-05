@@ -23,13 +23,13 @@ namespace RestoApp.Infrastructure.Auth
             this.dbContext = dbContext;
             this.logger = logger;
         }
-        public async Task<Resto?> InsertResto(Resto resto)
+        public async Task<string?> InsertResto(Resto resto)
         {
             try
             {
                 SqlConnection dbConnection = (SqlConnection)dbContext.Database.GetDbConnection();
 
-                using (SqlCommand cmd = new SqlCommand(SPRepository.SPINSERTRESTO, dbConnection))
+                using (SqlCommand cmd = new SqlCommand(SPRepository.SPIURESTOUSER, dbConnection))
                 {
                     SqlDataAdapter adapter = new SqlDataAdapter(cmd);
                     adapter.SelectCommand.CommandType = System.Data.CommandType.StoredProcedure;
@@ -38,10 +38,24 @@ namespace RestoApp.Infrastructure.Auth
                     adapter.SelectCommand.Parameters.Add(new SqlParameter("@pNAME", SqlDbType.VarChar)).Value = resto.Name;
                     adapter.SelectCommand.Parameters.Add(new SqlParameter("@pCATEGORYID", SqlDbType.UniqueIdentifier)).Value = resto.CategoryId;
                     DataTable dt = new DataTable();
-                    await Task.Run(() => adapter.Fill(dt));
+                    await Task.Run(() =>
+                    {
+                        adapter.Fill(dt);
+                    });
                     if (dt.Rows.Count > 0)
                     {
-                        return resto;
+                        foreach (DataRow dr in dt.Rows)
+                        {
+                            var error = dr["MESSAGE"].ToString();
+                            if (error == null)
+                            {
+                                return null;
+                            }
+                            if (error.Length > 0)
+                            {
+                                return error;
+                            }
+                        }
                     }
                 }
                 return null;
@@ -49,7 +63,7 @@ namespace RestoApp.Infrastructure.Auth
             catch (Exception ex)
             {
                 logger.LogError($"RestoAuthRepository Create Resto: {ex.Message}");
-                return null;
+                return "Terjadi Kesalahan pada server";
             }
         }
     }
