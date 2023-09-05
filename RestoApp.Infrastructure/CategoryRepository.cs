@@ -1,7 +1,10 @@
-﻿using RestoApp.Application;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using RestoApp.Application;
 using RestoApp.Domain;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -11,18 +14,32 @@ namespace RestoApp.Infrastructure
 {
     public class CategoryRepository : ICategoryRepository
     {
-        public static List<Category> list = new List<Category>()
+        public CategoryRepository(RestoDbContext dbContext)
         {
-            new Category { Id = Guid.NewGuid(), Name = "Test1"},
-            new Category { Id = Guid.NewGuid(), Name = "Test2"},
-            new Category { Id = Guid.NewGuid(), Name = "Test3"},
-            new Category { Id = Guid.NewGuid(), Name = "Test4"},
-            new Category { Id = Guid.NewGuid(), Name = "Test5"},
-            new Category { Id = Guid.NewGuid(), Name = "Test6"},
-        };
+            this.dbContext = dbContext;
+        }
+        private readonly RestoDbContext dbContext;
+
         public List<Category> GetAll()
         {
-            return list;
+            SqlConnection dbConnection = (SqlConnection)dbContext.Database.GetDbConnection();
+
+            using (SqlCommand cmd = new SqlCommand("GetCategory", dbConnection))
+            {
+                SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                adapter.SelectCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                DataTable dt = new DataTable();
+                adapter.Fill(dt);
+                if (dt.Rows.Count > 0)
+                {
+                    foreach (DataRow dataRow in dt.Rows)
+                    {
+                        Console.WriteLine(dataRow.ToString());
+                    }
+                    
+                }
+                return new List<Category>();
+            }
         }
             
     }
