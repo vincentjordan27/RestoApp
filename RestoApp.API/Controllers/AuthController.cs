@@ -19,7 +19,7 @@ namespace RestoApp.API.Controllers
         }
 
         [HttpPost]
-        [Route("resto/register")]
+        [Route("register/resto")]
         public async Task<IActionResult> RegisterResto([FromBody] RegisterRestoRequestDto registerRestoDTO)
         {
             var result = await restoAuthService.RegisterResto(registerRestoDTO);
@@ -28,6 +28,18 @@ namespace RestoApp.API.Controllers
                 return Ok(new { message = "Berhasil register" });
             }
             return BadRequest(new { message = result });
+        }
+
+        [HttpPost]
+        [Route("login/resto")]
+        public async Task<IActionResult> LoginResto([FromBody] LoginRequestDto loginRequest)
+        {
+            var result = await restoAuthService.LoginResto(loginRequest);
+            if (result != null)
+            {
+                return Ok(new { token = result });
+            }
+            return BadRequest(new { message = "Username or password incorrect" });
         }
 
     }

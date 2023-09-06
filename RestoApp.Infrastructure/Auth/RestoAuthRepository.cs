@@ -42,21 +42,6 @@ namespace RestoApp.Infrastructure.Auth
                     {
                         adapter.Fill(dt);
                     });
-                    if (dt.Rows.Count > 0)
-                    {
-                        foreach (DataRow dr in dt.Rows)
-                        {
-                            var error = dr["MESSAGE"].ToString();
-                            if (error == null)
-                            {
-                                return null;
-                            }
-                            if (error.Length > 0)
-                            {
-                                return error;
-                            }
-                        }
-                    }
                 }
                 return null;
             }

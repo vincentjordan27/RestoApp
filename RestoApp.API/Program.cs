@@ -9,6 +9,10 @@ using RestoApp.Application.Mapper;
 using RestoApp.Application.Auth;
 using Microsoft.AspNetCore.Identity;
 using RestoApp.Infrastructure.Category;
+using RestoApp.Infrastructure.Jwt;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +34,7 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IRestoAuthService, RestoAuthService>();
 builder.Services.AddScoped<IRestoAuthRepository, RestoAuthRepository>();
+builder.Services.AddScoped<ITokenRepository, TokenRepository>();
 builder.Services.AddDbContext<RestoAuthDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("RestoDb"));
@@ -42,7 +47,11 @@ builder.Services.AddDbContext<RestoDbContext>(options =>
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
 builder.Services.AddIdentityCore<IdentityUser>()
-    .AddEntityFrameworkStores<RestoAuthDbContext>();
+    .AddRoles<IdentityRole>()
+    .AddTokenProvider<DataProtectorTokenProvider<IdentityUser>>("RestoApp")
+    .AddEntityFrameworkStores<RestoAuthDbContext>()
+    .AddDefaultTokenProviders();
+
 
 builder.Services.Configure<IdentityOptions>(options =>
 {
@@ -54,6 +63,19 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequiredUniqueChars = 1;
 });
 
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+        }
+    );
 
 var app = builder.Build();
 
@@ -65,7 +87,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseAuthorization();
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

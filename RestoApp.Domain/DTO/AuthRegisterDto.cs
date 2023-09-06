@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RestoApp.Application.Auth
+namespace RestoApp.Domain.DTO
 {
-    public interface ITokenService
+    public class AuthRegisterDto
     {
-        
+        public string message { get; set; }
     }
 }

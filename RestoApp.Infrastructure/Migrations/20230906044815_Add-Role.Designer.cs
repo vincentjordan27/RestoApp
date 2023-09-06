@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RestoApp.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using RestoApp.Infrastructure.Data;
 namespace RestoApp.Infrastructure.Migrations
 {
     [DbContext(typeof(RestoAuthDbContext))]
-    partial class RestoAuthDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230906044815_Add-Role")]
+    partial class AddRole
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -10,6 +10,7 @@ namespace RestoApp.Application.Auth
     public interface IRestoAuthService
     {
         Task<string?> RegisterResto(RegisterRestoRequestDto registerRestoDTO);
+        Task<string?> LoginResto(LoginRequestDto loginRestoDTO);
         
     }
 }
