@@ -13,7 +13,8 @@ namespace RestoApp.Application.Mapper
     {
         public AutoMapperProfile()
         {
-            CreateMap<RegisterRestoRequestDto, Resto>().ReverseMap();
+            CreateMap<RegisterRestoRequestDto, Domain.Entities.Resto>().ReverseMap();
+            CreateMap<Menu, MenuResponse>().ReverseMap();
         }
     }
 }

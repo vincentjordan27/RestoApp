@@ -23,7 +23,7 @@ namespace RestoApp.Infrastructure.Auth
             this.dbContext = dbContext;
             this.logger = logger;
         }
-        public async Task<string?> InsertResto(Resto resto)
+        public async Task<string?> InsertResto(Domain.Entities.Resto resto)
         {
             try
             {

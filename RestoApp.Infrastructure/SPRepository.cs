@@ -10,5 +10,6 @@ namespace RestoApp.Infrastructure
     {
         public static string SPIURESTOUSER = "IU_RESTO";
         public static string SPCHECKCATEGORY = "CHECK_CATEGORY_EXIST";
+        public static string SPGETRESTOMENU = "GET_RESTO_MENU";
     }
 }

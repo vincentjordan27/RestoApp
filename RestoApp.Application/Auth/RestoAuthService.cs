@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using RestoApp.Domain.DTO;
-using RestoApp.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -76,7 +75,7 @@ namespace RestoApp.Application.Auth
                 identityResult = await userManager.AddToRoleAsync(identityUser, "Resto");
                 if (identityResult.Succeeded)
                 {
-                    var resto = mapper.Map<Resto>(registerRestoDTO);
+                    var resto = mapper.Map<Domain.Entities.Resto>(registerRestoDTO);
                     resto.Id = id;
                     var resultInsert = await restoAuthRepository.InsertResto(resto);
                     logger.LogError(resultInsert);

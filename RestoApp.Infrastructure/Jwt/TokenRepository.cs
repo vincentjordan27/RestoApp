@@ -44,5 +44,24 @@ namespace RestoApp.Infrastructure.Jwt
                 );
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
+        public Guid GetUserId(string token)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]));
+
+            tokenHandler.ValidateToken(token, new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = key,
+                ValidateIssuer = false,
+                ValidateAudience = false,
+            }, out SecurityToken validatedToken);
+
+            var jwtToken = (JwtSecurityToken)validatedToken;
+            var userId = jwtToken.Claims.First(x => x.Type == ClaimTypes.Sid).Value;
+            var userGuid = new Guid(userId);
+            return userGuid;
+        }
     }
 }

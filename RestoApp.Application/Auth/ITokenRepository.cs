@@ -10,5 +10,6 @@ namespace RestoApp.Application.Auth
     public interface ITokenRepository
     {
         string GetToken(IdentityUser identityUser, List<string> roles);
+        Guid GetUserId(string token);
     }
 }

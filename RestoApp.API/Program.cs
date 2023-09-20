@@ -13,6 +13,8 @@ using RestoApp.Infrastructure.Jwt;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using RestoApp.Application.Resto;
+using RestoApp.Infrastructure.Resto;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,7 +36,10 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IRestoAuthService, RestoAuthService>();
 builder.Services.AddScoped<IRestoAuthRepository, RestoAuthRepository>();
+builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<ITokenRepository, TokenRepository>();
+builder.Services.AddScoped<IRestoService, RestoService>();
+builder.Services.AddScoped<IRestoRepository, RestoRepository>();
 builder.Services.AddDbContext<RestoAuthDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("RestoDb"));
