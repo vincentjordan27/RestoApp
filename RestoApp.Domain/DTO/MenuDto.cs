@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RestoApp.Domain.DTO
 {
-    public class AddMenuDto
+    public class MenuDto
     {
         public string Name {  get; set; }
         public int Price { get; set; }

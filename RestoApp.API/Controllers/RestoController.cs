@@ -47,7 +47,7 @@ namespace RestoApp.API.Controllers
 
         [HttpPost("menu")]
         [Authorize]
-        public async Task<IActionResult> AddRestoMenu([FromBody] AddMenuDto addMenuDto)
+        public async Task<IActionResult> AddRestoMenu([FromBody] MenuDto addMenuDto)
         {
             var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", string.Empty);
             var userId = tokenService.GetUserId(token);
@@ -57,6 +57,22 @@ namespace RestoApp.API.Controllers
                 return BadRequest(result);
             }
             return Ok(result);
+        }
+
+        [HttpPut("menu/{id}")]
+        [Authorize]
+        public async Task<IActionResult> UpdateMenu([FromBody] MenuDto menuDto, Guid id)
+        {
+            var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", string.Empty);
+            var userId = tokenService.GetUserId(token);
+            var result = await restoService.UpdateMenu(menuDto, id, userId);
+            if (result.Status == Constant.ERROR)
+            {
+                return BadRequest(result);
+            } else
+            {
+                return Ok(result);
+            }
         }
     }
 }

@@ -47,12 +47,12 @@ namespace RestoApp.Application.Resto
             return response;
         }
 
-        public async Task<GeneralResponse> AddMenu(AddMenuDto addMenu, Guid id)
+        public async Task<GeneralResponse> AddMenu(MenuDto addMenu, Guid id)
         {
             var dataMenu = mapper.Map<Menu>(addMenu);
             dataMenu.Id = Guid.NewGuid();
-            logger.LogError("Resto Service ", dataMenu.Id);
-            var result = await restoRepository.AddRestoMenu(dataMenu, id);
+            dataMenu.RestoId = id;
+            var result = await restoRepository.AddRestoMenu(dataMenu);
             var response = new GeneralResponse { };
             if (result == null)
             {
@@ -66,5 +66,24 @@ namespace RestoApp.Application.Resto
             return response;
         }
 
+        public async Task<GeneralResponse> UpdateMenu(MenuDto menuDto, Guid id, Guid userId)
+        {
+            var dataMenu = mapper.Map<Menu>(menuDto);
+            dataMenu.Id = id;
+            dataMenu.RestoId = userId;
+            var result = await restoRepository.UpdateRestoMenu(dataMenu);
+            var response = new GeneralResponse { };
+            if (result == null)
+            {
+                response.Status = Constant.SUCCESS;
+                response.Message = "Success Update Menu";
+            }
+            else
+            {
+                response.Status = Constant.ERROR;
+                response.Message = result;
+            }
+            return response;
+        }
     }
 }

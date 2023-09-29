@@ -10,6 +10,7 @@ namespace RestoApp.Application.Resto
     public interface IRestoRepository
     {
         Task<(List<Menu>, string?)> GetRestoMenu(Guid id);
-        Task<string?> AddRestoMenu(Menu menu, Guid id);
+        Task<string?> AddRestoMenu(Menu menu);
+        Task<string?> UpdateRestoMenu(Menu menu);
     }
 }
