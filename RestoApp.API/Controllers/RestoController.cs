@@ -74,5 +74,19 @@ namespace RestoApp.API.Controllers
                 return Ok(result);
             }
         }
+
+        [HttpDelete("menu/{id}")]
+        [Authorize]
+        public async Task<IActionResult> DeleteMenu(Guid id)
+        {
+            var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", string.Empty);
+            var userId = tokenService.GetUserId(token);
+            var response = await restoService.DeleteMenu(id, userId);
+            if (response.Status == Constant.ERROR)
+            {
+                return BadRequest(response);
+            }
+            return Ok(response);
+        }
     }
 }

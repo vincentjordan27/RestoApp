@@ -74,7 +74,7 @@ namespace RestoApp.Infrastructure.Resto
                 {
                     SqlDataAdapter adapter = new SqlDataAdapter(cmd);
                     adapter.SelectCommand.CommandType = System.Data.CommandType.StoredProcedure;
-                    adapter.SelectCommand.Parameters.Add(new SqlParameter("@pINS_UPT", SqlDbType.VarChar)).Value = "INS";
+                    adapter.SelectCommand.Parameters.Add(new SqlParameter("@pINS_UPT_DEL", SqlDbType.VarChar)).Value = "INS";
                     adapter.SelectCommand.Parameters.Add(new SqlParameter("@pID", SqlDbType.UniqueIdentifier)).Value = menu.Id;
                     adapter.SelectCommand.Parameters.Add(new SqlParameter("@pNAME", SqlDbType.VarChar)).Value = menu.Name;
                     adapter.SelectCommand.Parameters.Add(new SqlParameter("@pPRICE", SqlDbType.Int)).Value = menu.Price;
@@ -112,7 +112,7 @@ namespace RestoApp.Infrastructure.Resto
                 {
                     SqlDataAdapter adapter = new SqlDataAdapter(cmd);
                     adapter.SelectCommand.CommandType = System.Data.CommandType.StoredProcedure;
-                    adapter.SelectCommand.Parameters.Add(new SqlParameter("@pINS_UPT", SqlDbType.VarChar)).Value = "UPT";
+                    adapter.SelectCommand.Parameters.Add(new SqlParameter("@pINS_UPT_DEL", SqlDbType.VarChar)).Value = "UPT";
                     adapter.SelectCommand.Parameters.Add(new SqlParameter("@pID", SqlDbType.UniqueIdentifier)).Value = menu.Id;
                     adapter.SelectCommand.Parameters.Add(new SqlParameter("@pNAME", SqlDbType.VarChar)).Value = menu.Name;
                     adapter.SelectCommand.Parameters.Add(new SqlParameter("@pPRICE", SqlDbType.Int)).Value = menu.Price;
@@ -138,6 +138,46 @@ namespace RestoApp.Infrastructure.Resto
             catch(Exception ex)
             {
                 logger.LogError($"RestoRepository Update Menu Resto: {ex.Message}");
+                return "Terjadi Kesalahan pada server";
+            }
+        }
+
+        public async Task<string?> DeleteRestoMenu(Guid id, Guid userId)
+        {
+            try
+            {
+                SqlConnection dbConnection = (SqlConnection)dbContext.Database.GetDbConnection();
+                using (SqlCommand cmd = new SqlCommand(SPRepository.SPIURESTOMENU, dbConnection))
+                {
+                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                    adapter.SelectCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                    adapter.SelectCommand.Parameters.Add(new SqlParameter("@pINS_UPT_DEL", SqlDbType.VarChar)).Value = "DEL";
+                    adapter.SelectCommand.Parameters.Add(new SqlParameter("@pID", SqlDbType.UniqueIdentifier)).Value = id;
+                    adapter.SelectCommand.Parameters.Add(new SqlParameter("@pNAME", SqlDbType.VarChar)).Value = "";
+                    adapter.SelectCommand.Parameters.Add(new SqlParameter("@pPRICE", SqlDbType.Int)).Value = 0;
+                    adapter.SelectCommand.Parameters.Add(new SqlParameter("@pRESTOID", SqlDbType.UniqueIdentifier)).Value = userId;
+                    DataTable dt = new DataTable();
+                    await Task.Run(() =>
+                    {
+                        adapter.Fill(dt);
+                    });
+
+                    if (dt.Rows.Count > 0)
+                    {
+                        foreach (DataRow row in dt.Rows)
+                        {
+                            if (Convert.ToInt32(row[0]) < 1)
+                            {
+                                return "Not Found";
+                            }
+                        }
+                    }
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"RestoRepository Delete Menu Resto: {ex.Message}");
                 return "Terjadi Kesalahan pada server";
             }
         }

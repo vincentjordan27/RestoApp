@@ -12,5 +12,6 @@ namespace RestoApp.Application.Resto
         Task<(List<Menu>, string?)> GetRestoMenu(Guid id);
         Task<string?> AddRestoMenu(Menu menu);
         Task<string?> UpdateRestoMenu(Menu menu);
+        Task<string?> DeleteRestoMenu(Guid id, Guid userId);
     }
 }

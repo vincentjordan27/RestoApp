@@ -85,5 +85,21 @@ namespace RestoApp.Application.Resto
             }
             return response;
         }
+
+        public async Task<GeneralResponse> DeleteMenu(Guid id, Guid userId)
+        {
+            var result = await restoRepository.DeleteRestoMenu(id, userId);
+            var response = new GeneralResponse { }; 
+            if (result == null)
+            {
+                response.Status = Constant.SUCCESS;
+                response.Message = "Success Delete Menu";
+            } else
+            {
+                response.Status = Constant.ERROR;
+                response.Message = result;
+            }
+            return response;
+        }
     }
 }
