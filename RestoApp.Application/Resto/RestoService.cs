@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using RestoApp.Domain.Constant;
 using RestoApp.Domain.DTO;
 using RestoApp.Domain.Entities;
 using System;
@@ -45,5 +46,25 @@ namespace RestoApp.Application.Resto
             };
             return response;
         }
+
+        public async Task<GeneralResponse> AddMenu(AddMenuDto addMenu, Guid id)
+        {
+            var dataMenu = mapper.Map<Menu>(addMenu);
+            dataMenu.Id = Guid.NewGuid();
+            logger.LogError("Resto Service ", dataMenu.Id);
+            var result = await restoRepository.AddRestoMenu(dataMenu, id);
+            var response = new GeneralResponse { };
+            if (result == null)
+            {
+                response.Status = Constant.SUCCESS;
+                response.Message = "Success Add New Menu";
+            } else
+            {
+                response.Status = Constant.ERROR;
+                response.Message = result;
+            }
+            return response;
+        }
+
     }
 }

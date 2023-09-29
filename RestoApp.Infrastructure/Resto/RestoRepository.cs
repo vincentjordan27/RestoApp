@@ -64,5 +64,33 @@ namespace RestoApp.Infrastructure.Resto
                 return (rows, ex.ToString());
             }
         }
+
+        public async Task<string?> AddRestoMenu(Menu menu, Guid id)
+        {
+            try
+            {
+                SqlConnection dbConnection = (SqlConnection)dbContext.Database.GetDbConnection();
+                using (SqlCommand cmd = new SqlCommand(SPRepository.SPIURESTOMENU, dbConnection))
+                {
+                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                    adapter.SelectCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                    adapter.SelectCommand.Parameters.Add(new SqlParameter("@pINS_UPT", SqlDbType.VarChar)).Value = "INS";
+                    adapter.SelectCommand.Parameters.Add(new SqlParameter("@pID", SqlDbType.UniqueIdentifier)).Value = menu.Id;
+                    adapter.SelectCommand.Parameters.Add(new SqlParameter("@pNAME", SqlDbType.VarChar)).Value = menu.Name;
+                    adapter.SelectCommand.Parameters.Add(new SqlParameter("@pPRICE", SqlDbType.Int)).Value = menu.Price;
+                    adapter.SelectCommand.Parameters.Add(new SqlParameter("@pRESTOID", SqlDbType.UniqueIdentifier)).Value = id;
+                    DataTable dt = new DataTable();
+                    await Task.Run(() =>
+                    {
+                        adapter.Fill(dt);
+                    });
+                };
+                return null;
+            }
+            catch (Exception ex) {
+                logger.LogError($"RestoRepository Add Menu Resto: {ex.Message}");
+                return "Terjadi Kesalahan pada server";
+            }
+        }
     }
 }

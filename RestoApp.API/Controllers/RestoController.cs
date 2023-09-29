@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RestoApp.Application.Auth;
 using RestoApp.Application.Resto;
+using RestoApp.Domain.Constant;
 using RestoApp.Domain.DTO;
 
 namespace RestoApp.API.Controllers
@@ -42,6 +43,20 @@ namespace RestoApp.API.Controllers
             {
                 return Ok(wrapper);
             }
+        }
+
+        [HttpPost("menu")]
+        [Authorize]
+        public async Task<IActionResult> AddRestoMenu([FromBody] AddMenuDto addMenuDto)
+        {
+            var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", string.Empty);
+            var userId = tokenService.GetUserId(token);
+            var result = await restoService.AddMenu(addMenuDto, userId);
+            if (result.Status == Constant.ERROR)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
         }
     }
 }
