@@ -42,5 +42,12 @@ namespace RestoApp.API.Controllers
             return BadRequest(new { message = "Username or password incorrect" });
         }
 
+        [HttpGet]
+        [Route("register/customer")]
+        public async Task<IActionResult> RegisterCustomer(RegisterCustomerRequestDto requestDto)
+        {
+            return Ok();
+        }
+
     }
 }
