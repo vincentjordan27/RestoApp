@@ -16,6 +16,7 @@ namespace RestoApp.Application.Mapper
             CreateMap<RegisterRestoRequestDto, Domain.Entities.Resto>().ReverseMap();
             CreateMap<Menu, MenuResponse>().ReverseMap();
             CreateMap<MenuDto, Menu>().ReverseMap();
+            CreateMap<Domain.Entities.Resto, RestoResponseDto>().ReverseMap();
         }
     }
 }

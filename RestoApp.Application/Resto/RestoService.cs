@@ -101,5 +101,22 @@ namespace RestoApp.Application.Resto
             }
             return response;
         }
+
+        public async Task<ListRestoResponseDto> GetListResto()
+        {
+            var result = await restoRepository.GetResto();
+            var response = new ListRestoResponseDto();
+            if (result.Item2 != null)
+            {
+                response.Status = Constant.ERROR;
+                response.Message = result.Item2;
+                return response;
+            }
+            var listItem = mapper.Map<List<RestoResponseDto>>(result.Item1);
+            response.Status = Constant.SUCCESS;
+            response.Message = "Success Get Resto List";
+            response.Datas = listItem;
+            return response;
+        }
     }
 }

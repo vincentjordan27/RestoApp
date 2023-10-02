@@ -54,7 +54,6 @@ namespace RestoApp.Infrastructure.Resto
                             
                         }
                     }
-                    logger.LogError(rows.ToString());
                     return (rows, null);
                 }
             }
@@ -179,6 +178,42 @@ namespace RestoApp.Infrastructure.Resto
             {
                 logger.LogError($"RestoRepository Delete Menu Resto: {ex.Message}");
                 return "Terjadi Kesalahan pada server";
+            }
+        }
+
+        public async Task<(List<Domain.Entities.Resto>, string?)> GetResto()
+        {
+            List<Domain.Entities.Resto> restos = new List<Domain.Entities.Resto>();
+            try
+            {
+                SqlConnection sqlConnection = (SqlConnection)dbContext.Database.GetDbConnection();
+                using(SqlCommand cmd = new SqlCommand(SPRepository.SPGETRESTO, sqlConnection))
+                {
+                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                    adapter.SelectCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                    DataTable dt = new DataTable();
+                    await Task.Run(() =>
+                    {
+                        adapter.Fill(dt);
+                    });
+                    if (dt.Rows.Count > 0)
+                    {
+                        foreach(DataRow row in dt.Rows)
+                        {
+                            Domain.Entities.Resto resto = new Domain.Entities.Resto();
+                            resto.Id = Guid.Parse(row[0].ToString());
+                            resto.Name = row[1].ToString();
+                            resto.CategoryName = row[2].ToString();
+                            restos.Add(resto);
+                        }
+                    }
+                    return (restos, null);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"RestoRepository Get Restos: {ex.Message}");
+                return (restos, ex.Message);
             }
         }
     }

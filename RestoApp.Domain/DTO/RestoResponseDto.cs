@@ -4,13 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RestoApp.Domain.Entities
+namespace RestoApp.Domain.DTO
 {
-    public class Resto
+    public class RestoResponseDto
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public Guid CategoryId { get; set; }
         public string CategoryName { get; set; }
     }
 }
