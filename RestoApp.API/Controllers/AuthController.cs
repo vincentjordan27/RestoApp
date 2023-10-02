@@ -11,11 +11,13 @@ namespace RestoApp.API.Controllers
     {
         private readonly IRestoAuthService restoAuthService;
         private readonly ILogger<authController> logger;
+        private readonly ICustomerAuthService customerAuthService;
 
-        public authController(IRestoAuthService restoAuthService, ILogger<authController> logger)
+        public authController(IRestoAuthService restoAuthService, ILogger<authController> logger , ICustomerAuthService customerAuthService)
         {
             this.restoAuthService = restoAuthService;
             this.logger = logger;
+            this.customerAuthService = customerAuthService;
         }
 
         [HttpPost]
@@ -42,11 +44,28 @@ namespace RestoApp.API.Controllers
             return BadRequest(new { message = "Username or password incorrect" });
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("register/customer")]
         public async Task<IActionResult> RegisterCustomer(RegisterCustomerRequestDto requestDto)
         {
-            return Ok();
+            var result = await customerAuthService.RegisterCustomer(requestDto);
+            if (result == null)
+            {
+                return Ok(new { message = "Berhasil register" });
+            }
+            return BadRequest(new { message = result });
+        }
+
+        [HttpPost]
+        [Route("login/customer")]
+        public async Task<IActionResult> LoginCustomer([FromBody] LoginRequestDto loginRequest)
+        {
+            var result = await customerAuthService.LoginCustomer(loginRequest);
+            if (result != null)
+            {
+                return Ok(new { token = result });
+            }
+            return BadRequest(new { message = "Username or password incorrect" });
         }
 
     }

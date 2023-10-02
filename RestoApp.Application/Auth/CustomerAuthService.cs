@@ -13,15 +13,37 @@ namespace RestoApp.Application.Auth
     {
         private readonly UserManager<IdentityUser> userManager;
         private readonly ILogger<CustomerAuthService> logger;
+        private readonly ITokenRepository tokenRepository;
 
-        public CustomerAuthService(UserManager<IdentityUser> userManager, ILogger<CustomerAuthService> logger)
+        public CustomerAuthService(UserManager<IdentityUser> userManager, ILogger<CustomerAuthService> logger, ITokenRepository tokenRepository)
         {
             this.userManager = userManager;
             this.logger = logger;
+            this.tokenRepository = tokenRepository;
         }
-        public Task<string?> LoginCustomer(LoginRequestDto requestDto)
+        public async Task<string?> LoginCustomer(LoginRequestDto requestDto)
         {
-            throw new NotImplementedException();
+            var user = await userManager.FindByNameAsync(requestDto.Username);
+            if (user != null)
+            {
+                var result = await userManager.CheckPasswordAsync(user, requestDto.Password);
+                if (result)
+                {
+                    var roles = await userManager.GetRolesAsync(user);
+                    if (roles != null)
+                    {
+                        if (roles[0] == "Customer")
+                        {
+                            var jwtToken = tokenRepository.GetToken(user, roles.ToList());
+                            return jwtToken;
+                        } else
+                        {
+                            return null;
+                        }
+                    }
+                }
+            }
+            return null;
         }
 
         public async Task<string?> RegisterCustomer(RegisterCustomerRequestDto requestDto)
@@ -38,9 +60,12 @@ namespace RestoApp.Application.Auth
                 identityResult = await userManager.AddToRoleAsync(identityUser, "Customer");
                 if (identityResult.Succeeded)
                 {
-
+                    return null;
                 }
+                logger.LogError("Error Addtorole Register Customer");
+                return identityResult.Errors.ToList()[0].Description;
             }
+            return identityResult.Errors.ToList()[0].Description;
         }
     }
 }

@@ -35,6 +35,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IRestoAuthService, RestoAuthService>();
+builder.Services.AddScoped<ICustomerAuthService, CustomerAuthService>();
 builder.Services.AddScoped<IRestoAuthRepository, RestoAuthRepository>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<ITokenRepository, TokenRepository>();
