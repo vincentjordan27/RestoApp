@@ -8,7 +8,7 @@ using RestoApp.Domain.DTO;
 
 namespace RestoApp.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/")]
     [ApiController]
     public class RestoController : ControllerBase
     {
