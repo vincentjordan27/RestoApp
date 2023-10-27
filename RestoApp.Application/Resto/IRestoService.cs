@@ -15,5 +15,6 @@ namespace RestoApp.Application.Resto
         Task<GeneralResponse> AddMenu(MenuDto addMenu, Guid id);
         Task<GeneralResponse> UpdateMenu(MenuDto menuDto, Guid id, Guid userId);
         Task<GeneralResponse> DeleteMenu(Guid id, Guid userId);
+        Task<GeneralResponse> OrderMenu(CreateOrderDto orderDto, Guid userId);
     }
 }

@@ -10,5 +10,6 @@ namespace RestoApp.Domain.Constant
     {
         public static string SUCCESS = "success";
         public static string ERROR = "error";
+        public static string ORDER_RECEIVED = "OrderReceived";
     }
 }

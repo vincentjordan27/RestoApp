@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using RestoApp.Application.Auth;
 using RestoApp.Application.Resto;
 using RestoApp.Domain.Constant;
+using RestoApp.Domain.DTO;
 
 namespace RestoApp.API.Controllers
 {
@@ -12,11 +14,13 @@ namespace RestoApp.API.Controllers
     {
         private readonly IRestoService restoService;
         private readonly ILogger<CustomerController> logger;
+        private readonly ITokenService tokenService;
 
-        public CustomerController(IRestoService restoService, ILogger<CustomerController> logger)
+        public CustomerController(IRestoService restoService, ILogger<CustomerController> logger, ITokenService tokenService)
         {
             this.restoService = restoService;
             this.logger = logger;
+            this.tokenService = tokenService;
         }
 
         [HttpGet]
@@ -52,6 +56,21 @@ namespace RestoApp.API.Controllers
             {
                 return Ok(wrapper);
             }
+        }
+
+        [HttpPost]
+        [Route("order")]
+        [Authorize]
+        public async Task<IActionResult> OrderMenu(CreateOrderDto orderDto)
+        {
+            var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", string.Empty);
+            var userId = tokenService.GetUserId(token);
+            var response = await restoService.OrderMenu(orderDto, userId);
+            if (response.Status == Constant.ERROR)
+            {
+                return BadRequest(response);
+            }
+            return Ok(response);
         }
     }
 }

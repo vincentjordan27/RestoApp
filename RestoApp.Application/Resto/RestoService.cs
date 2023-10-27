@@ -17,12 +17,14 @@ namespace RestoApp.Application.Resto
         private readonly ILogger<RestoService> logger;
         private readonly IMapper mapper;
         private readonly IRestoRepository restoRepository;
+        private readonly IOrderRepository orderRepository;
 
-        public RestoService(ILogger<RestoService> logger, IMapper mapper, IRestoRepository restoRepository)
+        public RestoService(ILogger<RestoService> logger, IMapper mapper, IRestoRepository restoRepository, IOrderRepository orderRepository)
         {
             this.logger = logger;
             this.mapper = mapper;
             this.restoRepository = restoRepository;
+            this.orderRepository = orderRepository;
         }
 
         public async Task<ListMenuResponseDto> GetRestoMenu(Guid id)
@@ -116,6 +118,26 @@ namespace RestoApp.Application.Resto
             response.Status = Constant.SUCCESS;
             response.Message = "Success Get Resto List";
             response.Datas = listItem;
+            return response;
+        }
+
+        public async Task<GeneralResponse> OrderMenu(CreateOrderDto orderDto, Guid userId)
+        {
+            var order = mapper.Map<Order>(orderDto);
+            order.CustomerId = userId;
+            order.Id = Guid.NewGuid();
+            var result = await orderRepository.OrderMenu(order);
+            var response = new GeneralResponse { };
+            if (result == null)
+            {
+                response.Status = Constant.SUCCESS;
+                response.Message = "Success Order Menu";
+            }
+            else
+            {
+                response.Status = Constant.ERROR;
+                response.Message = result;
+            }
             return response;
         }
     }

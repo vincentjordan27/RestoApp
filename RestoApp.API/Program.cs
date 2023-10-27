@@ -15,6 +15,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using RestoApp.Application.Resto;
 using RestoApp.Infrastructure.Resto;
+using RestoApp.Infrastructure.Order;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,11 +42,16 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<ITokenRepository, TokenRepository>();
 builder.Services.AddScoped<IRestoService, RestoService>();
 builder.Services.AddScoped<IRestoRepository, RestoRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddDbContext<RestoAuthDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("RestoDb"));
 });
 builder.Services.AddDbContext<RestoDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("RestoDb"));
+});
+builder.Services.AddDbContext<OrderDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("RestoDb"));
 });
